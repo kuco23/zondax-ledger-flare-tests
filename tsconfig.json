@@ -1,14 +1,16 @@
 {
   "compilerOptions": {
-    "target": "es6",
-    "module": "ESNext",
+    "target": "es2016",
+    "module": "CommonJS",
+    "esModuleInterop": true,
     "moduleResolution": "node",
+    "allowJs": true,
     "strict": true,
     "skipLibCheck": true,
-    "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+    "preserveSymlinks": true
   },
-  "include": ["src/**/*.ts", "tests/**/*.ts"],
+  "include": ["test/**/*.ts", "tests/**/*.ts"],
   "exclude": ["node_modules"]
 }
