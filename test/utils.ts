@@ -72,13 +72,10 @@ export function prefix0x(tx: string) {
   return tx.startsWith('0x') ? tx : '0x' + tx
 }
 
-export function standardizeSignature(signature: any): { r: BN, s: BN, recoveryParam: number } {
-  let recoveryParam = Number(signature.v!.toString('hex'))
-  if (recoveryParam === 27 || recoveryParam === 28) 
-    recoveryParam -= 27
-  return {
-    r: new BN(signature.r!),
-    s: new BN(signature.s!),
-    recoveryParam: recoveryParam
-  }
+export async function sleep(milliseconds: number) {
+  await new Promise((resolve: any) => {
+    setTimeout(() => {
+      resolve()
+    }, milliseconds)
+  })
 }

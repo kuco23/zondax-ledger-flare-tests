@@ -2,7 +2,7 @@ import { ethers } from 'ethers'
 import Transport from '@ledgerhq/hw-transport-node-hid'
 import FlareApp from '@zondax/ledger-flare'
 import { FLR_RPC, CCHAIN_PATH, ERC20_ABI, RECEIVER_ADDRESS, WRAPPED_FLARE_ADDRESS } from './constants'
-import { prefix0x, unPrefix0x } from './utils'
+import { prefix0x, unPrefix0x, sleep } from './utils'
 
 
 const provider = new ethers.JsonRpcProvider(FLR_RPC)
@@ -14,12 +14,13 @@ async function signAndSendCChainTx(rawTx: any) {
   const addressAndPubKey = await flare.getEVMAddress(CCHAIN_PATH, false)
   const publicKey = addressAndPubKey.publicKey
   const address = ethers.computeAddress(prefix0x(publicKey))
-  console.log("address:", address)
   const balance = await provider.getBalance(address)
-  if (balance == BigInt(0)) throw new Error("no balance")
-  console.log("balance:", ethers.parseEther(balance.toString()))
+  if (balance / BigInt(1e18) == BigInt(0))
+    throw new Error(`no balance on address ${address}`)
+  console.log("balance:", ethers.formatEther(balance))
   // set nonce and chainId
-  rawTx.nonce = await provider.getTransactionCount(address)
+  const nonce = await provider.getTransactionCount(address)
+  rawTx.nonce = nonce
   rawTx.chainId = 14
   // construct and sign ethers tx
   const tx = ethers.Transaction.from(rawTx)
@@ -28,7 +29,18 @@ async function signAndSendCChainTx(rawTx: any) {
   signature.s = prefix0x(signature.s)
   signature.v = prefix0x(signature.v)
   tx.signature = ethers.Signature.from(signature)
+  // send and wait for tx finalization
+  console.log("sending tx:", tx.hash)
   await provider.send('eth_sendRawTransaction', [tx.serialized])
+  console.log("waiting for tx finalization")
+  while (true) {
+    await sleep(2000)
+    const _nonce = await provider.getTransactionCount(address)
+    if (_nonce > nonce) {
+      console.log("tx finalized", tx.hash)
+      break
+    }
+  }
 }
 
 async function contractCallTx(abi: any, address: string, method: string, params: any[], value: string | number): Promise<any> {
