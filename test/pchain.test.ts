@@ -10,7 +10,7 @@ const fstContext = require('@flarenetwork/flare-stake-tool/dist/src/context')
 describe("Zondax P-chain signing", () => {
   let flareApp: FlareApp
   let context: any
-
+  
   before(async () => {
     const transport = await Transport.create()
     flareApp = new FlareApp(transport)
