@@ -10,7 +10,7 @@ const fstContext = require('@flarenetwork/flare-stake-tool/dist/src/context')
 describe("Zondax P-chain signing", () => {
   let flareApp: FlareApp
   let context: any
-  
+
   before(async () => {
     const transport = await Transport.create()
     flareApp = new FlareApp(transport)
@@ -19,7 +19,7 @@ describe("Zondax P-chain signing", () => {
     console.log(context.cAddressHex)
   })
 
-  it.only("should sign and issue an exportCP transaction to the network", async () => {    
+  it("should sign and issue an exportCP transaction to the network", async () => {    
     
     const params = {
       amount: new BN(1)

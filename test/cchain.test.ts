@@ -45,7 +45,7 @@ async function contractCallTx(abi: any, address: string, method: string, params:
 
 describe('Zondax evm methods', () => {
 
-  it.only("should sign and send a simple evm transfer", async () => {
+  it("should sign and send a simple evm transfer", async () => {
     const evmTransferTx = {
       gasPrice: 25000000000,
       gasLimit: 21000,
