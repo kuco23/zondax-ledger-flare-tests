@@ -15,7 +15,7 @@ async function signAndSendCChainTx(rawTx: any) {
   const publicKey = addressAndPubKey.publicKey
   const address = ethers.computeAddress(prefix0x(publicKey))
   const balance = await provider.getBalance(address)
-  if (balance / BigInt(1e18) == BigInt(0))
+  if (balance / BigInt(1e12) == BigInt(0))
     throw new Error(`no balance on address ${address}`)
   console.log("balance:", ethers.formatEther(balance))
   // set nonce and chainId
@@ -48,7 +48,7 @@ async function contractCallTx(abi: any, address: string, method: string, params:
   const callTx = await contract.getFunction(method).populateTransaction(...params, { type: 0 })
   return {
     ...callTx,
-    gasPrice: 25000000000,
+    gasPrice: 50000000000,
     gasLimit: 8000000,
     chainId: 14,
     value: value
